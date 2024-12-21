@@ -1,4 +1,4 @@
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.2-RELEASE --name headphones \
           boot=on vnet=on dhcp=on bpf=yes \
           allow_raw_sockets="1" \
@@ -6,7 +6,7 @@ iocage create --release 11.2-RELEASE --name headphones \
           interfaces="vnet1:bridge1" \
           defaultrouter="172.20.40.1" \
           resolver="search ramsden.network;nameserver 172.20.40.1;nameserver 8.8.8.8"
-{%endace%}
+```
 
 iocage exec headphones 'mkdir -p /media/data/Music /var/db/headphones /media/Downloads/Complete /media/Downloads/Incomplete'
 iocage exec headphones 'pw useradd -n media -u 8675309'

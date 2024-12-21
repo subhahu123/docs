@@ -17,22 +17,22 @@ Prerequisites (Arch only):
 
 Create a ZFS dataset for wine bottle.
 
-{%ace lang='sh'%}
+```shell
 zfs create -o mountpoint=legacy vault/sys/$(hostname)/home/john/local/share/wine
-{%endace%}
+```
 
 Add to fstab:
 
-{%ace lang='sh'%}
+```shell
 vault/sys/chin/home/john/local/share/wine  /home/john/.local/share/wine zfs       rw,relatime,xattr,noacl     0 0
-{%endace%}
+```
 
 Mount it
 
-{%ace lang='sh'%}
+```shell
 mkdir /home/john/.local/share/wine
 mount -a
-{%endace%}
+```
 
 ## Configuration
 
@@ -40,19 +40,19 @@ Always use ```env WINEPREFIX=${HOME}/.local/share/wine/<wine bottle>``` when cre
 
 Install dependencies:
 
-{%ace lang='sh'%}
+```shell
 pacman -S mpg123 lib32-gst-plugins-base-libs pulseaudio-alsa lib32-libpulse lib32-alsa-plugins lib32-libldap lib32-openal
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 pacaur -S ttf-ms-fonts  ttf-tahoma
-{%endace%}
+```
 
 To create a 32bit bottle use ```WINEARCH=win32```.
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/pathofexile winecfg
-{%endace%}
+```
 
 Enable CSMT, optionallenable emulate virtual desktop and change DPI.
 
@@ -66,9 +66,9 @@ echo $"VRAM: "$(($(grep -P -o -i "(?<=memory:).*(?=kbytes)" /var/log/Xorg.0.log)
 
 Set in regedit. Copy the number.
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/pathofexile wine regedit
-{%endace%}
+```
 
 Go to ```HKEY_CURRENT_USER>Software>Wine```
 
@@ -79,20 +79,20 @@ Go to ```HKEY_CURRENT_USER>Software>Wine```
 
 Install dependencies
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/pathofexile winetricks -q glsl=disabled directx9 usp10 msls31
-{%endace%}
+```
 
 Download and execute installer.
 
-{%ace lang='sh'%}
+```shell
 cd ${HOME}/.local/share/wine/pathofexile
 wget https://www.pathofexile.com/downloads/PathOfExileInstaller.exe
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/pathofexile wine ${HOME}/.local/share/wine/pathofexile/PathOfExileInstaller.exe
-{%endace%}
+```
 
 Run game launcher.
 
-{%ace lang='sh'%}
+```shell
 env WINEDEBUG=-all WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/pathofexile wine "${HOME}/.local/share/wine/pathofexile/drive_c/Program Files/Grinding Gear Games/Path of Exile/PathOfExile.exe" dbox  -no-dwrite -noasync
-{%endace%}
+```

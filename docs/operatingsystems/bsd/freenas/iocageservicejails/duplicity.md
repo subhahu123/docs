@@ -13,7 +13,7 @@ Setup for Duplicity service jail with iocage.
 
 Create jail:
 
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.1-RELEASE --name duplicity \
           boot="on" vnet=on bpf=on \
           allow_raw_sockets="1" \
@@ -21,7 +21,7 @@ iocage create --release 11.1-RELEASE --name duplicity \
           interfaces="vnet1:bridge1" \
           defaultrouter="172.20.40.1" \
           resolver="search ramsden.network;nameserver 172.20.40.1;nameserver 8.8.8.8"
-{%endace%}
+```
 
 Create user on FreeNAS with ID `983`, `nologin` to match the user in the jail.
 
@@ -29,35 +29,35 @@ Nullfs mount datasets to backup in jail:
 
 Duplicity data:
 
-{%ace lang='sh'%}
+```shell
 iocage exec duplicity 'mkdir -p /mnt/duplicity/data'
 iocage fstab --add duplicity '/mnt/tank/data/syncthing/sync /mnt/duplicity/data nullfs rw 0 0'
-{%endace%}
+```
 
 Start jail and enter.
 
-{%ace lang='sh'%}
+```shell
 iocage console duplicity
-{%endace%}
+```
 
 ### Jail
 
 In the jail, update all packages and install ```duplicity``` and `py27-boto`.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
 pkg install duplicity py27-boto
-{%endace%}
+```
 
 Create a user with uid `983` to match mounted data.
 
-{%ace lang='sh'%}
+```shell
 pw useradd -n duplicity -u 983
-{%endace%}
+```
 
 Add script `/usr/local/scripts/duplicitybak`, put secrets in `/usr/local/scripts/duplicitybak.auth`.
 
-{%ace lang='sh'%}
+```shell
 #!/bin/sh
 
 # on freebsd install duplicity, py27-boto
@@ -86,11 +86,11 @@ duplicity cleanup --force gs://${GS_BUCKET}
 unset PASSPHRASE
 unset GS_ACCESS_KEY_ID
 unset GS_SECRET_ACCESS_KEY
-{%endace%}
+```
 
 Secrets in `/usr/local/scripts/duplicitybak.auth`:
 
-{%ace lang='sh'%}
+```shell
 # Create password to use for symetric GPG encryption
 export PASSPHRASE=""
 
@@ -98,16 +98,16 @@ export PASSPHRASE=""
 # enable interoperable access, get keys
 export GS_ACCESS_KEY_ID=""
 export GS_SECRET_ACCESS_KEY=""
-{%endace%}
+```
 
 Set executable:
 
-{%ace lang='sh'%}
+```shell
 chmod +x /usr/local/scripts/duplicitybak
-{%endace%}
+```
 
-Now I can be run from a crontab outside of the jail: 
+Now I can be run from a crontab outside of the jail:
 
-{%ace lang='sh'%}
+```shell
 iocage exec duplicity /usr/local/scripts/duplicitybak
-{%endace%}
+```

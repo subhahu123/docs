@@ -13,7 +13,7 @@ Setup for sickchill service jail with iocage.
 
 Create jail:
 
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.2-RELEASE --name sickchill0 \
           boot="on" vnet=on bpf=yes \
           allow_raw_sockets="1" \
@@ -21,7 +21,7 @@ iocage create --release 11.2-RELEASE --name sickchill0 \
           interfaces="vnet1:bridge1" \
           defaultrouter="172.20.40.1" \
           resolver="search ramsden.network;nameserver 172.20.40.1;nameserver 8.8.8.8"
-{%endace%}
+```
 
 On Freenas create datasets:
 
@@ -35,41 +35,41 @@ On Freenas create datasets:
 
 Create media user/group using uid from freenas:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sickchill 'pw useradd -n media -u 8675309'
-{%endace%}
+```
 
 Nullfs mount datasets in jail:
 
 sickchill data:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sickchill 'mkdir -p /var/db/sickchill /mnt/backups'
 iocage exec sickchill 'chown media:media /var/db/sickchill /mnt/backups'
 iocage fstab --add sickchill '/mnt/tank/data/database/sickchill /var/db/sickchill nullfs rw 0 0'
 iocage fstab --add sickchill '/mnt/tank/backups/Lilan/sickchill /mnt/backups nullfs rw 0 0'
-{%endace%}
+```
 
 Downloads:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sickchill 'mkdir -p /media/Downloads/Complete /media/Downloads/Incomplete /media/Torrents'
 iocage exec sickchill 'chown -R media:media /media'
 
 iocage fstab --add sickchill '/mnt/tank/media/Downloads/Complete /media/Downloads/Complete nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Downloads/Incomplete /media/Downloads/Incomplete nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Torrents /media/Torrents nullfs rw 0 0'
-{%endace%}
+```
 
 Setup directories:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sickchill 'mkdir -p /media/Series/Series /media/Series/Lectures /media/Series/Documentary /media/Series/Anime /media/Series/Animated /media/Series/Podcasts/Audio /media/Series/Podcasts/Video /media/Naddy /media/Movie/Movies /media/Movie/Sports' && iocage exec sickchill 'chown -R media:media /media'
-{%endace%}
+```
 
 Repeat for media:
 
-{%ace lang='sh'%}
+```shell
 iocage fstab --add sickchill '/mnt/tank/media/Series/Series /media/Series/Series nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Series/Podcasts/Audio /media/Series/Podcasts/Audio nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Series/Podcasts/Video /media/Series/Podcasts/Video nullfs rw 0 0' && \
@@ -80,38 +80,38 @@ iocage fstab --add sickchill '/mnt/tank/media/Series/Animated /media/Series/Anim
 iocage fstab --add sickchill '/mnt/tank/media/Naddy /media/Naddy nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Movie/Movies /media/Movie/Movies nullfs rw 0 0' && \
 iocage fstab --add sickchill '/mnt/tank/media/Movie/Sports /media/Movie/Sports nullfs rw 0 0'
-{%endace%}
+```
 
 Check fstab:
 
-{%ace lang='sh'%}
+```shell
 iocage fstab --list sickchill
-{%endace%}
+```
 
 Start jail and enter.
 
-{%ace lang='sh'%}
+```shell
 iocage console sickchill
-{%endace%}
+```
 
 ### In Jail
 
 Update.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
-{%endace%}
+```
 
 Install requirements.
 
-{%ace lang='sh'%}
+```shell
 pkg install \
   "git" "python3" "python38" "py38-pip" "py38-setuptools" "py38-sqlite3" "py38-pillow" "py38-virtualenv" "unrar" "ca_root_nss" "libmediainfo" "libxslt" "libxml2" "rust"
-{%endace%}
+```
 
 Install sickchill.
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /.cargo
 chown -R media:media /.cargo
 
@@ -123,29 +123,29 @@ chown -R media:media sickchill/
 su media
 cd sickchill/
 git reset --hard HEAD
-{%endace%}
+```
 
 Copy the startup script
 
-{%ace lang='sh'%}
+```shell
 mkdir /usr/local/etc/rc.d
 cp /var/db/sickchill/contrib/runscripts/init.freebsd /usr/local/etc/rc.d/sickchill
-{%endace%}
+```
 
 Make startup script executable
 
-{%ace lang='sh'%}
+```shell
 chmod 555 /usr/local/etc/rc.d/sickchill
-{%endace%}
+```
 
 Add settings to rc.conf
 
-{%ace lang='sh'%}
+```shell
 sysrc 'sickchill_enable=YES' 'sickchill_user=media' 'sickchill_group=media' 'sickchill_dir=/var/db/sickchill'
-{%endace%}
+```
 
 Start sickchill.
 
-{%ace lang='sh'%}
+```shell
 service sickchill start
-{%endace%}
+```

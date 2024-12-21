@@ -11,20 +11,20 @@ folder: systemadministration/zfs
 
 Install zrepl binary from [releases](https://github.com/zrepl/zrepl/releases).
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /mnt/tank/system/root/bin
 cd /mnt/tank/system/root/bin
 wget -O zrepl https://github.com/zrepl/zrepl/releases/download/v0.2.0/zrepl-freebsd-amd64
 chmod +x zrepl
-{%endace%}
+```
 
 Create config:
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /mnt/tank/system/root/etc/zrepl
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 cat << "EOF" | tee /mnt/tank/system/root/etc/zrepl/zrepl.yml
 jobs:
   - name: wooly
@@ -68,17 +68,17 @@ jobs:
           grid: 1x1h(keep=all) | 24x1h | 60x1d | 24x30d
           regex: "zrepl_.*"
 EOF
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 zrepl configcheck --config /mnt/tank/system/root/etc/zrepl/zrepl.yml
-{%endace%}
+```
 
 ---
 
 On source:
 
-{%ace lang='sh'%}
+```shell
 cat << "EOF" | sudo tee /etc/zrepl/zrepl.yml
 jobs:
 - name: pull_source
@@ -109,7 +109,7 @@ jobs:
     prefix: zrepl_
     interval: 5m
 EOF
-{%endace%}
+```
 
 ---
 
@@ -117,14 +117,14 @@ EOF
 
 On server and client in config directory:
 
-{%ace lang='sh'%}
+```shell
 name=wooly.ramsden.network;
 openssl req -x509 -sha256 -nodes \
  -newkey rsa:4096 \
  -days 1095 \
  -keyout $name.key \
  -out $name.crt -addext "subjectAltName = DNS:$name" -subj "/CN=$name"
-{%endace%}
+```
 
 copy HOSTNAME.crt to each opposite host
 
@@ -133,7 +133,7 @@ zrepl status --config /mnt/tank/system/root/etc/zrepl/zrepl.yml
 
 Run daemon on boot (freenas task)
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /var/run/zrepl && \
 chmod 700 /var/run/zrepl && \
 /usr/sbin/daemon \
@@ -144,4 +144,4 @@ chmod 700 /var/run/zrepl && \
     -p /var/run/zrepl_daemon_child.pid \
         /mnt/tank/system/root/bin/zrepl daemon \
             --config /mnt/tank/system/root/etc/zrepl/zrepl.yml
-{%endace%}
+```

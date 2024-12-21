@@ -13,11 +13,11 @@ Enable [user namespaces](https://wiki.archlinux.org/index.php/Linux_Containers#E
 
 ## Requirements
 
-First enable the sysctl: 
+First enable the sysctl:
 
-{%ace lang='sh'%}
+```shell
 echo 'sysctl kernel.unprivileged_userns_clone = 1' | tee /etc/sysctl.d/20-unprivileged_userns.conf
-{%endace%}
+```
 
 Reload sysctl's with `sysctl --system`
 
@@ -32,9 +32,9 @@ lxc.idmap = g 0 100000 65536
 
 Edit shadow files for g/uids
 
-{%ace lang='sh'%}
+```shell
 cat /etc/subuid /etc/subgid
-{%endace%}
+```
 
 ```
 root:100000:65536
@@ -58,32 +58,32 @@ Setup directories. Similar paths:
 
 Create zfs dataset for containers:
 
-{%ace lang='sh'%}
+```shell
 mkdir ~/.local/share/lxc
 zfs create -o mountpoint=legacy vault/sys/wooly/home/john/local/share/lxc
 mount -t zfs vault/sys/wooly/home/john/local/share/lxc /home/john/.local/share/lxc
 chown -R john:john /home/john/.local/share/lxc
-{%endace%}
+```
 
 Add to fstab (double check it).
 
-{%ace lang='sh'%}
+```shell
 genfstab -U / | grep /home/john/.local/share/lxc | tee --append /etc/fstab
-{%endace%}
+```
 
 Let user create up to 10 bridges.
 
-{%ace lang='sh'%}
+```shell
 echo 'john veth lxcbr0 10' | tee --append /etc/lxc/lxc-usernet
-{%endace%}
+```
 
 *NOTE: May need to enable `haveged.service` (I got gpg errors without it).*
 
 ## Create Container
 
-{%ace lang='sh'%}
+```shell
 lxc-create --template=download --name=tiger
-{%endace%}
+```
 
 ## References
 

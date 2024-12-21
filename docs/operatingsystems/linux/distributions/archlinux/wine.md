@@ -15,9 +15,9 @@ Install wine staging for much better performance.
 
 Optionally install [wine-mono](https://www.archlinux.org/packages/?name=wine_gecko) and [wine_gecko](https://www.archlinux.org/packages/?name=wine-mono) see [wiki](https://wiki.archlinux.org/index.php/Wine#Installation) for info.
 
-{%ace lang='sh'%}
+```shell
 pacman -S wine-staging wine-mono wine_gecko
-{%endace%}
+```
 
 ### Wine file associations
 
@@ -25,6 +25,6 @@ To avoid having [wine file associations](https://wiki.archlinux.org/index.php/Wi
 
 To prevent them set environment variable ```WINEDLLOVERRIDES```.
 
-{%ace lang='sh'%}
+```shell
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
-{%endace%}
+```

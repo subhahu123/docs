@@ -11,19 +11,19 @@ folder: systemadministration
 
 List keys to get your key:
 
-{%ace lang='sh'%}
+```shell
 gpg --list-keys
-{%endace%}
+```
 
 Edit key:
 
-{%ace lang='sh'%}
+```shell
 gpg --edit-key <KEY ID>
-{%endace%}
+```
 
 At prompt, add a new subkey, select signing or encrypting, keysize, and expiry:
 
-{%ace lang='sh'%}
+```shell
 gpg> addkey
 Please select what kind of key you want:
    (3) DSA (sign only)
@@ -44,7 +44,7 @@ Key is valid for? (0) 2y
 Key expires at Wed 04 Sep 2019 10:51:34 PM PDT
 Is this correct? (y/N) y
 Really create? (y/N) y
-{%endace%}
+```
 
 Repeat for encrypting key if you need one.
 
@@ -52,55 +52,55 @@ Repeat for encrypting key if you need one.
 
 Get your new subkey's ID you want to export.
 
-{%ace lang='sh'%}
+```shell
 gpg --list-keys --with-subkey-fingerprint <KEY ID>
-{%endace%}
+```
 
 Export the subkey, keeping the ```!```, can list multiple keys:
 
-{%ace lang='sh'%}
+```shell
 gpg -a --export-secret-subkeys <subkey id>! [ <subkey id2>!] > temp_directory/subkey.gpg
-{%endace%}
+```
 
 To change the passphrase, import the key into a temporary folder.
 
-{%ace lang='sh'%}
+```shell
 mkdir temp_directory/gpg
 gpg --homedir temp_directory/gpg --import temp_directory/subkey.gpg
-{%endace%}
+```
 
 Edit the key, and change the passphrase.
 
-{%ace lang='sh'%}
+```shell
 gpg --homedir temp_directory/gpg --edit-key <user-id>
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 > passwd
 > save
-{%endace%}
+```
 
 Note: You will get a warning "error changing passphrase", but it can be ignored.
 
 Now export again as the new, altered subkey.
 
-{%ace lang='sh'%}
+```shell
 gpg --homedir temp_directory/gpg -a --export-secret-subkeys [subkey id]! > temp_directory/subkey.altpass.gpg
-{%endace%}
+```
 
 ## Importing The Subkey(s)
 
 Now, on a new system, the subkeys can be imported:
 
-{%ace lang='sh'%}
+```shell
 gpg --import subkey.altpass.gpg
-{%endace%}
+```
 
 Checking ```gpg --list-secret-keys``` will show a ```#``` after sec, meaning the master key isn't present:
 
 On new, subkey only system:
 
-{%ace lang='sh'%}
+```shell
 /home/john/.gnupg/pubring.kbx
 -----------------------------
 
@@ -110,7 +110,7 @@ uid           [ unknown] John Ramsden (<comment>) <email>
 uid           [ unknown] John Ramsden (<comment>) <email>
 ssb   rsa4096 2017-09-05 [S] [expires: 2019-09-05]
 ssb   rsa4096 2017-09-05 [E] [expires: 2019-09-05]
-{%endace%}
+```
 
 References:
 

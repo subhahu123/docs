@@ -13,7 +13,7 @@ Setup for Emby service jail with iocage.
 
 Create jail:
 
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.1-RELEASE --name sabnzbd \
           boot="on" vnet=on bpf=on \
           allow_raw_sockets="1" \
@@ -21,7 +21,7 @@ iocage create --release 11.1-RELEASE --name sabnzbd \
           interfaces="vnet1:bridge1" \
           defaultrouter="172.20.40.1" \
           resolver="search ramsden.network;nameserver 172.20.40.1;nameserver 8.8.8.8"
-{%endace%}
+```
 
 On Freenas create datasets:
 
@@ -33,52 +33,52 @@ On Freenas create datasets:
 
 Create media user/group using uid from freenas:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sabnzbd 'pw useradd -n media -u 8675309'
-{%endace%}
+```
 
 Nullfs mount datasets in jail:
 
 Sabnzbd data:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sabnzbd 'mkdir -p /var/db/sabnzbd' && \
 iocage exec sabnzbd 'chown media:media /var/db/sabnzbd' && \
 iocage fstab --add sabnzbd '/mnt/tank/data/database/sabnzbd /var/db/sabnzbd nullfs rw 0 0'
-{%endace%}
+```
 
 Downloads:
 
-{%ace lang='sh'%}
+```shell
 iocage exec sabnzbd 'mkdir -p /media/Downloads/Complete /media/Downloads/Incomplete && chown -R media:media /media'
 
 iocage fstab --add sabnzbd '/mnt/tank/media/Downloads/Complete /media/Downloads/Complete nullfs rw 0 0' && \
 iocage fstab --add sabnzbd '/mnt/tank/media/Downloads/Incomplete /media/Downloads/Incomplete nullfs rw 0 0'
-{%endace%}
+```
 
 Check fstab:
 
-{%ace lang='sh'%}
+```shell
 iocage fstab --list sabnzbd
-{%endace%}
+```
 
 Start jail and enter.
 
-{%ace lang='sh'%}
+```shell
 iocage console sabnzbd
-{%endace%}
+```
 
 ### Jail
 
 Update and install sabnzbd.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade && pkg install sabnzbdplus
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 sysrc 'sabnzbd_enable=YES' 'sabnzbd_user=media' 'sabnzbd_group=media' 'sabnzbd_conf_dir=/var/db/sabnzbd'
-{%endace%}
+```
 
 Restart jail
 

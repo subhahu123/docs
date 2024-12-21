@@ -9,9 +9,9 @@ tags: [ tuning, linux, networking ]
 
 Increase inotify max user watches:
 
-{%ace lang='sh'%}
+```shell
 echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.d/40-max-user-watches.conf
-{%endace%}
+```
 
 ## Network
 
@@ -19,12 +19,12 @@ Increase [netdev budget](https://access.redhat.com/sites/default/files/attachmen
 
 Add other [optimizations](https://wiki.archlinux.org/index.php/Sysctl#Networking) for better performance.
 
-{%ace lang='sh'%}
+```shell
 [root]# nano /etc/sysctl.d/30-network-tuning.conf
-{%endace%}
+```
 
 
-{%ace lang='sh'%}
+```shell
 # The maximum size of the receive queue.
 # The received frames will be stored in this queue after taking them from the ring buffer on the NIC.
 # Use high value for high speed cards to prevent loosing packets.
@@ -53,13 +53,13 @@ net.ipv4.udp_wmem_min = 16384
 # In the event of a synflood DOS attack, this queue can fill up pretty quickly, at which point tcp_syncookies will kick in allowing your system to continue to respond to legitimate traffic, and allowing you to gain access to block malicious IPs.
 # If the server suffers from overloads at peak times, you may want to increase this value a little bit.
 net.ipv4.tcp_max_syn_backlog = 65536
-{%endace%}
+```
 
 ## Reload Sysctls
 
-{%ace lang='sh'%}
+```shell
 sysctl --system
-{%endace%}
+```
 
 # References:
 https://github.com/firehol/netdata/issues/1076

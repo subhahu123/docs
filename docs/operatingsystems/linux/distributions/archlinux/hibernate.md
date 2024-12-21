@@ -13,9 +13,9 @@ First set up swap.
 
 For example, with UUID add:
 
-{%ace lang='sh'%}
+```shell
 resume=UUID=8a1aac0b-487d-48d5-a683-417031d5098a
-{%endace%}
+```
 
 ## Initramfs
 

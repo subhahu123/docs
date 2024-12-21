@@ -14,26 +14,26 @@ Going from a one interface setup, to two bonded:
 
 Before:
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/network/25-wired.network
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Match]
 Name=eno1
 
 [Network]
 Address=172.20.20.2/24
 Gateway=172.20.20.1
-{%endace%}
+```
 
 Create the [netdev](https://www.freedesktop.org/software/systemd/man/systemd.netdev.html) bond file ```/etc/systemd/network/25-bond1.netdev```.
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/network/25-bond1.netdev
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [NetDev]
 Name=bond1
 Kind=bond
@@ -41,64 +41,64 @@ Kind=bond
 #default is "balance-rr" (round robin)
 [Bond]
 #Mode="balance-rr
-{%endace%}
+```
 
 Create network for bond.
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/network/25-bond1.network
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Match]
 Name=bond1
 
 [Network]
 Address=172.20.20.2/24
 Gateway=172.20.20.1
-{%endace%}
+```
 
 Select interfaces.
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/network/20-eno1.network
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Match]
 Name=eno1
 
 [Network]
 Bond=bond1
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/network/25-enp5s0.network
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Match]
 Name=enp5s0
 
 [Network]
 Bond=bond1
-{%endace%}
+```
 
 Restart network:
 
-{%ace lang='sh'%}
+```shell
 systemctl restart systemd-resolved systemd-networkd
-{%endace%}
+```
 
 Check if functional:
 
-{%ace lang='sh'%}
+```shell
 networkctl
-{%endace%}
+```
 
 Before:
 
-{%ace lang='sh'%}
+```shell
 IDX LINK             TYPE               OPERATIONAL SETUP
   1 lo               loopback           carrier     unmanaged
   2 eno1             ether              routable    configured
@@ -107,11 +107,11 @@ IDX LINK             TYPE               OPERATIONAL SETUP
   5 virbr0-nic       ether              off         unmanaged
 
 5 links listed.
-{%endace%}
+```
 
 After:
 
-{%ace lang='sh'%}
+```shell
 IDX LINK             TYPE               OPERATIONAL SETUP
   1 lo               loopback           carrier     unmanaged
   2 bond0            ether              off         unmanaged
@@ -122,17 +122,17 @@ IDX LINK             TYPE               OPERATIONAL SETUP
   7 virbr0-nic       ether              off         unmanaged
 
 7 links listed.
-{%endace%}
+```
 
 **Note**: ```systemd``` automatically creates bond0, it can be ignored.
 
 Status:
 
-{%ace lang='sh'%}
+```shell
 cat /proc/net/bonding/bond1
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 cat /proc/net/bonding/bond1                             john@chin
 Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
 
@@ -157,7 +157,7 @@ Duplex: Unknown
 Link Failure Count: 0
 Permanent HW addr: 00:1b:21:63:1f:4d
 Slave queue ID: 0
-{%endace%}
+```
 
 **Note**: DNS using ```systemd-resolved``` config in ```/etc/systemd/resolved.conf```
 

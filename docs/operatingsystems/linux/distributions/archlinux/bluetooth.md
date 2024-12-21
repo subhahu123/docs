@@ -9,24 +9,24 @@ tags: [ archlinux, linux, postinstall ]
 
 Install ```bluez``` and ```bluez-utils```.
 
-{%ace lang='sh'%}
+```shell
 pacman -S bluez bluez-utils
-{%endace%}
+```
 
 Load bluetooth driver (may be already loaded).
 
-{%ace lang='sh'%}
+```shell
 modprobe btusb
-{%endace%}
+```
 
 Start, and enable the bluetooth unit
 
-{%ace lang='sh'%}
+```shell
 systemctl enable --now bluetooth
-{%endace%}
+```
 
 Add user(s) who will use bluetooth to ```lp``` group
 
-{%ace lang='sh'%}
+```shell
 gpasswd -a ${USER} lp
-{%endace%}
+```

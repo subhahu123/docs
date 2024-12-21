@@ -29,24 +29,24 @@ The following sections were done inside the jail.
 
 Install ```deluge``` or ```deluge-cli``` depending on what you want installed. Since this is a headless server I'm only installing the CLI version.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
 pkg install deluge-cli
-{%endace%}
+```
 
 #### Init Script
 
 Setup ```/etc/rc.conf```
 
-{%ace lang='sh'%}
+```shell
 sysrc 'deluged_enable=YES' 'deluged_user=media'
-{%endace%}
+```
 
 #### Start Service
 
-{%ace lang='sh'%}
+```shell
 service deluged start
-{%endace%}
+```
 
 ## Couchpotato
 
@@ -56,61 +56,61 @@ Install [couchpotato](https://couchpota.to/#freebsd) freebsd version from git.
 
 Create database dataset couchpotato and mount to ```/var/db/couchpotato```.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
-{%endace%}
+```
 
 Install required tools
 
-{%ace lang='sh'%}
+```shell
 pkg install python py27-sqlite3 fpc-libcurl docbook-xml git-lite
-{%endace%}
+```
 
 Use user media, clone to a temp repo in ```/var/db```.
 
-{%ace lang='sh'%}
+```shell
 cd /var/db
 git clone https://github.com/CouchPotato/CouchPotatoServer.git temp
-{%endace%}
+```
 
 Move the bare repo that was just cloned to the dataset we mounted earlier to ```/var/db/couchpotato```.
 
-{%ace lang='sh'%}
+```shell
 mv temp/.git couchpotato/
 rm -rf temp
-{%endace%}
+```
 
 Switch to the ```media``` user and reset the repo to HEAD.
 
-{%ace lang='sh'%}
+```shell
 su media
 cd couchpotato
 git reset --hard HEAD
 exit
-{%endace%}
+```
 
 As root, copy the startup script to ```/usr/local/etc/rc.d``` and make the startup script executable.
 
-{%ace lang='sh'%}
+```shell
 cp couchpotato/init/freebsd /usr/local/etc/rc.d/couchpotato
 chmod 555 /usr/local/etc/rc.d/couchpotato
-{%endace%}
+```
 
 Read the options at the top of ```/usr/local/etc/rc.d/couchpotato```.
 
 If not using the default install, specify options with startup flags.
 
-{%ace lang='sh'%}
+```shell
 sysrc 'couchpotato_enable=YES'
 sysrc 'couchpotato_user=media'
 sysrc 'couchpotato_dir=/var/db/couchpotato'
-{%endace%}
+```
 
 Finally, start couchpotato.
 
-{%ace lang='sh'%}
+```shell
 service couchpotato start
-{%endace%}
+```
 
 Restart the jail, open your browser and go to [http://server:5050/](http://server:5050/).
 
@@ -124,10 +124,10 @@ Create dataset, mount at ```/var/db/emby```
 
 In the jail, update all packages and install ```emby-server```.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
 pkg install emby-server
-{%endace%}
+```
 
 ### FFMpeg
 
@@ -135,21 +135,21 @@ It's recommended to install ffmpeg from ports so that certain compile time optio
 
 Update the FreeBSD ports tree
 
-{%ace lang='sh'%}
+```shell
 portsnap fetch extract update
-{%endace%}
+```
 
 Remove the default ffmpeg package
 
-{%ace lang='sh'%}
+```shell
 pkg delete -f ffmpeg
-{%endace%}
+```
 
 Reinstall FFMpeg from ports with lame option enabled
 
-{%ace lang='sh'%}
+```shell
 cd /usr/ports/multimedia/ffmpeg && make config
-{%endace%}
+```
 
 *   enable the lame option
 *   enable the ass subtitles option
@@ -158,9 +158,9 @@ cd /usr/ports/multimedia/ffmpeg && make config
 
 Compile and install.
 
-{%ace lang='sh'%}
+```shell
 make install clean
-{%endace%}
+```
 
 ### ImageMagick
 
@@ -170,50 +170,50 @@ It is recommended to recompile the graphics/ImageMagick package from ports with 
 
 Delete the imagemagick pkg.
 
-{%ace lang='sh'%}
+```shell
 pkg delete -f imagemagick
-{%endace%}
+```
 
 Install from ports
 
-{%ace lang='sh'%}
+```shell
 cd /usr/ports/graphics/ImageMagick && make config
-{%endace%}
+```
 
 *   Disable the 16BIT_PIXEL option
 
-{%ace lang='sh'%}
+```shell
 make install clean
-{%endace%}
+```
 
 ## Emby Start Options
 
 Set the rc script executable.
 
-{%ace lang='sh'%}
+```shell
 chmod 555 /usr/local/etc/rc.d/emby-server
-{%endace%}
+```
 
 Check the options.
 
-{%ace lang='sh'%}
+```shell
 less /usr/local/etc/rc.d/emby-server
-{%endace%}
+```
 
 Set emby to start on boot and change the options based on setup.
 
-{%ace lang='sh'%}
+```shell
 sysrc 'emby_server_enable=YES'
 sysrc 'emby_server_user=media'
 sysrc 'emby_server_group=media'
 sysrc 'emby_server_data_dir=/var/db/emby-server'
-{%endace%}
+```
 
 Start the emby service.
 
-{%ace lang='sh'%}
+```shell
 service emby-server start
-{%endace%}
+```
 
 ## Pod
 
@@ -221,33 +221,33 @@ service emby-server start
 
 Enter jail.
 
-{%ace lang='sh'%}
+```shell
 jexec pod tcsh
-{%endace%}
+```
 
 Update.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
-{%endace%}
+```
 
 ### Requirements
 
-{%ace lang='sh'%}
+```shell
 pkg install bash libxslt wget curl
-{%endace%}
+```
 
 bash requires fdescfs(5) mounted on /dev/fd, add to boot tasks in FreeNAS UI.
 
-{%ace lang='sh'%}
+```shell
 mount -t fdescfs fdesc /mnt/tank/jails/pod/dev/fd
-{%endace%}
+```
 
 ### Create User
 
 Create user 'pod'.
 
-{%ace lang='sh'%}
+```shell
 adduser pod
 Username: pod
 Full name: Podcatcher
@@ -275,25 +275,25 @@ OK? (yes/no): yes
 adduser: INFO: Successfully added (pod) to the user database.
 Add another user? (yes/no): no
 Goodbye!
-{%endace%}
+```
 
 ### Install bashpod
 
 Clone the script.
 
-{%ace lang='sh'%}
+```shell
 su pod
 cd /home/pod
 git clone https://github.com/johnramsden/bashpod.git
-{%endace%}
+```
 
 ### FreeNAS Task
 
 In order to run from FreeNAS, create a new task that runs the bashpod script.
 
-{%ace lang='sh'%}
+```shell
 jexec -U pod pod /usr/local/bin/bash -c "/home/pod/bashpod/bashpod.sh"
-{%endace%}
+```
 
 ## Sabnzbd
 
@@ -305,22 +305,22 @@ Create dataset, mount at ```/var/db/sabnzbd```
 
 Enter jail.
 
-{%ace lang='sh'%}
+```shell
 jexec sickrage tcsh
-{%endace%}
+```
 
 Update and install sabnzbd.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade && pkg install sabnzbdplus
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 sysrc 'sabnzbd_enable=YES'
 sysrc 'sabnzbd_user=media'
 sysrc 'sabnzbd_group=media'
 sysrc 'sabnzbd_conf_dir=/var/db/sabnzbd'
-{%endace%}
+```
 
 Restart jail
 
@@ -332,25 +332,25 @@ Edit config in ````/var/db/sabnzbd````, change host to ```0.0.0.0```
 
 Enter jail.
 
-{%ace lang='sh'%}
+```shell
 jexec sickrage tcsh
-{%endace%}
+```
 
 Update.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
-{%endace%}
+```
 
 Install requirements.
 
-{%ace lang='sh'%}
+```shell
 pkg install py27-sqlite3
-{%endace%}
+```
 
 Install SickRage.
 
-{%ace lang='sh'%}
+```shell
 cd /var/db
 git clone  https://github.com/SickRage/SickRage.git temp
 mv temp/.git sickrage/
@@ -360,34 +360,34 @@ su media
 cd sickrage/
 git reset --hard HEAD
 ls runscripts/
-{%endace%}
+```
 
 Copy the startup script
 
-{%ace lang='sh'%}
+```shell
 cp /var/db/sickrage/runscripts/init.freebsd /usr/local/etc/rc.d/sickrage
-{%endace%}
+```
 
 Make startup script executable
 
-{%ace lang='sh'%}
+```shell
 chmod 555 /usr/local/etc/rc.d/sickrage
-{%endace%}
+```
 
 Add settings to rc.conf
 
-{%ace lang='sh'%}
+```shell
 sysrc 'sickrage_enable=YES'
 sysrc 'sickrage_user=media'
 sysrc 'sickrage_group=media'
 sysrc 'sickrage_dir=/var/db/sickrage'
-{%endace%}
+```
 
 Start SickRage.
 
-{%ace lang='sh'%}
+```shell
 service sickrage start
-{%endace%}
+```
 
 ## Syncthing
 
@@ -399,24 +399,24 @@ On FreeNAS with ID ```983```, ```nologin```
 
 Enter jail.
 
-{%ace lang='sh'%}
+```shell
 jexec syncthing tcsh
-{%endace%}
+```
 
 Update and install syncthing.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade && pkg install syncthing
-{%endace%}
+```
 
 Add the following to ```rc.conf```:
 
-{%ace lang='sh'%}
+```shell
 sysrc 'syncthing_enable=YES'
 sysrc 'syncthing_user=syncthing'
 sysrc 'syncthing_group=syncthing'
 sysrc 'syncthing_dir=/var/db/syncthing'
-{%endace%}
+```
 
 ### Configure
 
@@ -428,26 +428,26 @@ Edit vim ```/var/db/syncthing/config.xml``` and change the IP address which the 
 
 Before:
 
-{%ace lang='xml'%}
+```
 <gui enabled="true" tls="false">
  <address>127.0.0.1:8384</address>;
  <apikey>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</apikey>;
 </gui>
-{%endace%}
+```
 
 After:
 
-{%ace lang='xml' %}
+```
 <gui enabled="true" tls="false">
  <address>0.0.0.0:8384</address>;
  <apikey>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</apikey>;
 </gui>
-{%endace%}
+```
 
 Restart the service for changes to apply:
 
-{%ace lang='sh'%}
+```shell
 service syncthing restart
-{%endace%}
+```
 
 Finally, access the GUI by pointing a browser to the server's address and port, ie ```http://SERVER_URL:8384```.

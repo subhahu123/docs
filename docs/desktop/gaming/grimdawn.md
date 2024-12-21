@@ -13,41 +13,41 @@ Install ```winetricks``` and ```wine-staging```
 
 Create individual bottle, enable ```staging -> CSMT```:
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/grimdawn winecfg
-{%endace%}
+```
 
 Install requirements:
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/grimdawn winetricks \
     vcrun2010 vcrun2012 xact xinput d3dx9
-{%endace%}
+```
 
 Download Windows Installer and run:
 
-{%ace lang='sh'%}
+```shell
 env WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/grimdawn wine \
     ${HOME}/.local/share/wine/grimdawn/drive_c/users/john/Downloads/SteamSetup.exe
-{%endace%}
+```
 
 After installing, install Grim Dawn in steam. If errors occur with ```steamwebui```, run ```winecfg``` and set ONLY steam to run in XP mode. If errors stull occur use ```-no-cef-sandbox```.
 
 
 Now grim dawn should start with:
 
-{%ace lang='sh'%}
+```shell
 env WINEDEBUG=-all WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/grimdawn wine \
     "${HOME}/.local/share/wine/grimdawn/drive_c/Program Files/Steam/steamapps/common/Grim Dawn/Grim Dawn.exe" -no-cef-sandbox
-{%endace%}
+```
 
 Create a desktop file in linux to start Grim Dawn.
 
-{%ace lang='sh'%}
+```shell
 nano "${HOME}/.local/share/applications/Grim Dawn.desktop"
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Desktop Entry]
 Exec=env WINEDEBUG=-all WINEARCH=win32 WINEPREFIX=${HOME}/.local/share/wine/grimdawn wine "${HOME}/.local/share/wine/grimdawn/drive_c/Program Files/Steam/steamapps/common/Grim Dawn/Grim Dawn.exe" -no-cef-sandbox
 GenericName=Dark fantasy ARPG with fast paced combat and massive exploration.
@@ -57,4 +57,4 @@ NoDisplay=false
 Path[$e]=
 StartupNotify=true
 Terminal=0
-{%endace%}
+```

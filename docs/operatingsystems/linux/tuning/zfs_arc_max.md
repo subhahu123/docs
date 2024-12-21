@@ -7,7 +7,7 @@ tags: [ tuning, linux, zfs ]
 
 Check stats with ```arcstat.py```
 
-{%ace lang='sh'%}
+```shell
 # arcstat.py -h
 Usage: arcstat.py [-hvx] [-f fields] [-o file] [-s string] [interval [count]]
 
@@ -23,18 +23,18 @@ Examples:
     arcstat.py -s "," -o /tmp/a.log 2 10
     arcstat.py -v
     arcstat.py -f time,hit%,dh%,ph%,mh% 1
-{%endace%}
+```
 
 Set arc max in ```/etc/modprobe.d/zfs.conf```, defaults to 50% memory.
 
 For example, 48GiB:
 
-{%ace lang='sh'%}
+```shell
 echo "options zfs zfs_arc_max=51539607552" > /etc/modprobe.d/zfs.conf
-{%endace%}
+```
 
 Rebuild kernel, then reboot.
 
-{%ace lang='sh'%}
+```shell
 mkinitcpio -p linux
-{%endace%}
+```

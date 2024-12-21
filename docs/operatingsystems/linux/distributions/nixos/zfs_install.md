@@ -14,20 +14,20 @@ In order to import a ZFS pool, ZFS must be enabled in the NixOS configuration fi
 
 Make sure zfs is in ```boot.supportedFilesystems```.
 
-{%ace lang='sh'%}
+```shell
 { config, pkgs, ... }:
 
 {
   imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-graphical-kde.nix> ];
   boot.supportedFilesystems = [ "zfs" ];
 }
-{%endace%}
+```
 
 Rebuild NixOS and switch to the new configuration.
 
-{%ace lang='sh'%}
+```shell
 nixos-rebuild switch
-{%endace%}
+```
 
 Check zfs is working,```modprobe zfs``` should show no problems.
 
@@ -41,24 +41,24 @@ Create a new pool or mount an existing pool.
 
 Create a pool using the disk ID and set it to 4k block size as default with ```ashift=12```.
 
-{%ace lang='sh'%}
+```shell
 ls -la /dev/disk/by-id/
 zpool create -f -o ashift=12 vault /dev/disk/by-id/${DISKS}
-{%endace%}
+```
 
 Export the pool after creation.
 
-{%ace lang='sh'%}
+```shell
 zpool export ${POOLNAME}
-{%endace%}
+```
 
 #### Using an Existing pool
 
 The existing pool assigning it to be relative to ```/mnt``` with ```-R```, the ```-N``` flag will tell ZFS not to mount any datasets.
 
-{%ace lang='sh'%}
+```shell
 zpool import -N -d /dev/disk/by-id -R /mnt vault
-{%endace%}
+```
 
 ## Setup Datasets
 
@@ -66,39 +66,39 @@ Mount all datasets partitions to /mnt.
 
 ### Filesystem
 
-{%ace lang='sh'%}
+```shell
 NIX_ROOT=/mnt
 ZFS_ROOT_DATASET=vault/sys/atom
 ZFS_DATA_DATASET=vault/data
-{%endace%}
+```
 
 Setup datasets. Set all legacy.
 
-{%ace lang='sh'%}
+```shell
 zfs create -o mountpoint=none vault/sys
 zfs create -o mountpoint=none ${ZFS_ROOT_DATASET}
 zfs create -o mountpoint=none ${ZFS_ROOT_DATASET}/ROOT
 zfs create -o mountpoint=legacy ${ZFS_ROOT_DATASET}/ROOT/default
 
 # Rest of datasets...
-{%endace%}
+```
 
 ## Mount Datasets
 
 Mount the datasets:
 
-{%ace lang='sh'%}
+```shell
 mkdir ${NIX_ROOT}/nix;
 mount -t zfs ${ZFS_ROOT_DATASET}/ROOT/default ${NIX_ROOT}
 
 # Rest of datasets...
-{%endace%}
+```
 
 #### Boot
 
 Create a 512M esp, mount to /boot
 
-{%ace lang='sh'%}
+```shell
 gdisk /dev/sdf
 
 Command (? for help): n
@@ -107,21 +107,21 @@ First sector (34-488397134, default = 225445888) or {+-}size{KMGTP}:
 Last sector (225445888-488397134, default = 488397134) or {+-}size{KMGTP}: +512
 Hex code or GUID (L to show codes, Enter = 8300): ef00
 Changed type of partition to 'EFI System'
-{%endace%}
+```
 
 Format boot and mount.
 
-{%ace lang='sh'%}
+```shell
 mkfs.fat -F32 /dev/sdf1
 mkdir ${NIX_ROOT}/boot
 mount /dev/sdf1 ${NIX_ROOT}/boot
-{%endace%}
+```
 
 #### Swap
 
 Create a partition of desired size.
 
-{%ace lang='sh'%}
+```shell
 gdisk /dev/sdf
 
 Command (? for help): n
@@ -131,15 +131,15 @@ Last sector (2099200-488397134, default = 488397134) or {+-}size{KMGTP}: +32G
 Current type is 'Linux filesystem'
 Hex code or GUID (L to show codes, Enter = 8300): 8200
 Changed type of partition to 'Linux swap'
-{%endace%}
+```
 
 Enable swap.
 
-{%ace lang='sh'%}
+```shell
 mkswap /dev/sdf2
 
 swapon /dev/sdf2
-{%endace%}
+```
 
 #### Install
 

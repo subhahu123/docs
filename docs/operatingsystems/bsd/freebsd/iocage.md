@@ -18,39 +18,39 @@ Since I didn't feel like polluting my system with user install python packages t
 
 Create ```/usr/local/opt/iocage```, install requirements and download source.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade && pkg install python36 libgit2 git # Or git-lite
 mkdir -p /usr/local/opt/iocage
 git clone --recursive https://github.com/iocage/iocage
-{%endace%}
+```
 
 Enter source directory, create a venv for the install..
 
-{%ace lang='sh'%}
+```shell
 cd iocage
 python3.6 -m venv venv
-{%endace%}
+```
 
 Enter the venv and install.
 
-{%ace lang='sh'%}
+```shell
 source venv/bin/activate
 make install
 deactivate
-{%endace%}
+```
 
 Symlink the script to ```/usr/local/bin/```.
 
-{%ace lang='sh'%}
+```shell
 ln -s /usr/local/opt/iocage/iocage/venv/bin/iocage /usr/local/bin/iocage
-{%endace%}
+```
 
 And test:
 
-{%ace lang='sh'%}
+```shell
 iocage --version
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 Version 0.9.9.2 RC
-{%endace%}
+```

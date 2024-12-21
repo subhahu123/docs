@@ -13,7 +13,7 @@ Setup for letsencrypt service jail with iocage.
 
 Create jail:
 
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.1-RELEASE --name letsencrypt \
           boot="on" vnet=on bpf=on \
           allow_raw_sockets="1" \
@@ -21,7 +21,7 @@ iocage create --release 11.1-RELEASE --name letsencrypt \
           interfaces="vnet1:bridge1" \
           defaultrouter="172.20.40.1" \
           resolver="search ramsden.network;nameserver 172.20.40.1;nameserver 8.8.8.8"
-{%endace%}
+```
 
 #### Datasets
 
@@ -62,70 +62,70 @@ Nullfs mount datasets in jail:
 
 letsencrypt data:
 
-{%ace lang='sh'%}
+```shell
 iocage exec letsencrypt 'mkdir -p /var/db/acme'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/acme /var/db/acme nullfs rw 0 0'
-{%endace%}
+```
 
 Setup directories for certs:
 
-{%ace lang='sh'%}
+```shell
 iocage exec letsencrypt 'mkdir -p /mnt/certs/couchpotato.ramsden.network /mnt/certs/emby.ramsden.network /mnt/certs/lilan.ramsden.network /mnt/certs/sabnzbd.ramsden.network /mnt/certs/sickrage.ramsden.network /mnt/certs/syncthing.ramsden.network'
-{%endace%}
+```
 
 Mount the directories:
 
-{%ace lang='sh'%}
+```shell
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/couchpotato.ramsden.network /mnt/certs/couchpotato.ramsden.network nullfs rw 0 0'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/emby.ramsden.network /mnt/certs/emby.ramsden.network nullfs rw 0 0'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/lilan.ramsden.network /mnt/certs/lilan.ramsden.network nullfs rw 0 0'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/sabnzbd.ramsden.network /mnt/certs/sabnzbd.ramsden.network nullfs rw 0 0'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/sickrage.ramsden.network /mnt/certs/sickrage.ramsden.network nullfs rw 0 0'
 iocage fstab --add letsencrypt '/mnt/tank/data/database/letsencrypt/certs/syncthing.ramsden.network /mnt/certs/syncthing.ramsden.network nullfs rw 0 0'
-{%endace%}
+```
 
 Check fstab:
 
-{%ace lang='sh'%}
+```shell
 iocage fstab --list letsencrypt
-{%endace%}
+```
 
 Start jail and enter.
 
-{%ace lang='sh'%}
+```shell
 iocage console letsencrypt
-{%endace%}
+```
 
 ### Jail
 
 In the jail, update all packages and install ```acme.sh```.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
 pkg install acme.sh
-{%endace%}
+```
 
 Switch to the ‘acme’ user which renews the certificate on a cron job
 add configuration.
 
-{%ace lang='sh'%}
+```shell
 su - acme
-{%endace%}
+```
 
 Issue cert
 
-{%ace lang='sh'%}
+```shell
 export CF_Email="****************"
 export CF_Key="****************"
 
 acme.sh --issue --dns dns_cf -d emby.ramsden.network
-{%endace%}
+```
 
 Add acme to le in FreeNAS and jail.
 
-{%ace lang='sh'%}
+```shell
 pw groupadd -n le -g 2000 && pw groupmod le -m acme
-{%endace%}
+```
 
 chown certs dir in freenas to acme:le recursively.
 
@@ -134,11 +134,11 @@ chown certs dir in freenas to acme:le recursively.
 
 Now, to set the install location for the certificates use the installcert command, for example:
 
-{%ace lang='sh'%}
+```shell
 acme.sh --installcert -d lilan.ramsden.network \
 --certpath /mnt/certs/lilan.ramsden.network/Lilan_s_LetsEncrypt_Certificate.crt \
 --keypath /mnt/certs/lilan.ramsden.network/Lilan_s_LetsEncrypt_Certificate.key
-{%endace%}
+```
 
 Cert deploy location: /etc/certificates
 
@@ -152,7 +152,7 @@ Emby needs pks file, to convert cert key cert and ca are needed
 
 Set deploy location
 
-{%ace lang='sh'%}
+```shell
 ACME_BIN="~/.acme.sh/acme.sh"
 
 SERVER="emby.ramsden.network"
@@ -177,7 +177,7 @@ openssl pkcs12 -export -out ${CERT_DEPLOY_DIR}/${SERVER}/${PKCS} \
                -in ${CERT_DEPLOY_DIR}/${SERVER}/${CERT} \
                -certfile ${CERT_DEPLOY_DIR}/${SERVER}/${CA} \
                -passout pass:
-{%endace%}
+```
 
 Install directory in jail: /var/db/emby-server/ssl
 
@@ -187,7 +187,7 @@ Crontab from freenas:
 
 You probably want to renew starts on a crontab so they get done every month. I use the following script to renew my various services:
 
-{%ace lang='sh'%}
+```shell
 #!/bin/sh
 
 # letsencrypt Jail
@@ -270,4 +270,4 @@ iocage exec emby /bin/sh -c 'service emby-server restart'
 echo
 echo "Finished deploying keys"
 
-{%endace%}
+```

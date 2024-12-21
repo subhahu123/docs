@@ -16,21 +16,21 @@ If disaster occurs and it's necessary to remotely access the machine, boot into 
 
 By default it's possible to SSH into the install media as root. In order to log in create a password.
 
-{%ace lang='sh'%}
+```shell
 passwd
-{%endace%}
+```
 
 Start SSH Daemon.
 
-{%ace lang='sh'%}
+```shell
 systemctl start sshd
-{%endace%}
+```
 
 Check the IP address.
 
-{%ace lang='sh'%}
+```shell
 ip addr
-{%endace%}
+```
 
 Now it should be possible to access the machine as root.
 

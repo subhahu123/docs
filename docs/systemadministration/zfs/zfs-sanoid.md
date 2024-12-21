@@ -11,13 +11,13 @@ folder: systemadministration/zfs
 
 Install sanoid, mbuffer, pv, lzop.
 
-{%ace lang='sh'%}
+```shell
 mv /etc/sanoid/sanoid.conf /etc/sanoid/sanoid.conf.example
-{%endace%}
+```
 
 Create prune unit:
 
-{%ace lang='sh'%}
+```shell
 cat << "EOF" | sudo tee /etc/systemd/system/sanoid-prune.service
 [Unit]
 Description=Cleanup ZFS Pool
@@ -33,9 +33,9 @@ ExecStart=/usr/bin/sanoid --prune-snapshots --verbose
 [Install]
 WantedBy=sanoid.service
 EOF
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 ######################################
 # This is a sample sanoid.conf file. #
 # It should go in /etc/sanoid.       #
@@ -96,7 +96,7 @@ EOF
     autoprune = no
     autosnap = no
     monitor = no
-{%endace%}
+```
 
 Install sanoid freenas:
 
@@ -135,7 +135,7 @@ zfs allow -u replicator compression,create,destroy,diff,mount,mountpoint,primary
 syncoid --recursive \
         vault root@lilan.ramsden.network:tank/replication/wooly/vault
 
-{%ace lang='sh'%}
+```shell
 cat << "EOF" | sudo tee /etc/systemd/system/syncoid.timer
 [Unit]
 Description=Run Syncoid Every 15 Minutes
@@ -147,9 +147,9 @@ Persistent=true
 [Install]
 WantedBy=timers.target
 EOF
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 cat << "EOF" | sudo tee /etc/systemd/system/syncoid.service
 [Unit]
 Description=Run Syncoid
@@ -160,7 +160,7 @@ Environment=TZ=UTC
 Type=oneshot
 ExecStart=/usr/bin/syncoid --recursive --no-privilege-elevation vault replicator@lilan.ramsden.network:tank/replication/enix/vault
 EOF
-{%endace%}
+```
 
 ps -aux|grep receive| awk '{print $2}'|xargs -n1 echo
 

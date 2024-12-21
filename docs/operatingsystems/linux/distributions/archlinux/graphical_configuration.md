@@ -16,25 +16,25 @@ First setup [xorg](https://wiki.archlinux.org/index.php/Xorg) and graphics.
 
 Install graphics drivers, my main system is [nvidia](https://wiki.archlinux.org/index.php/NVIDIA).
 
-{%ace lang='sh'%}
+```shell
 pacman -S nvidia lib32-nvidia-utils
-{%endace%}
+```
 
 ## Xorg
 
-{%ace lang='sh'%}
+```shell
 pacman -S xorg-server
-{%endace%}
+```
 
 Set dpi in ```~/.Xresources```, I use 192 for my 4k screen.
 
-{%ace lang='sh'%}
+```shell
 nano ~/.Xresources
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 Xft.dpi: 192
-{%endace%}
+```
 
 ### Nvidia - Tearing Fix
 
@@ -42,18 +42,18 @@ My Nvidia card tears. This removes the tearing.
 
 #### Desktop
 
-{%ace lang='sh'%}
+```shell
 nano /etc/X11/xorg.conf.d/20-nvidia.conf
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 Section "Screen"
     Identifier     "Screen0"
     Option         "metamodes" "nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
     Option         "AllowIndirectGLXProtocol" "off"
     Option         "TripleBuffer" "on"
 EndSection
-{%endace%}
+```
 
 #### Laptop
 
@@ -67,11 +67,11 @@ Add the ```nvidia-drm.modeset=1``` kernel parameter, and add ```nvidia```, ```nv
 
 To update initramfs after an NVIDIA driver upgrade, use a pacman hook:
 
-{%ace lang='sh'%}
+```shell
 /etc/pacman.d/hooks/nvidia.hook
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Trigger]
 Operation=Install
 Operation=Upgrade
@@ -83,7 +83,7 @@ Target=nvidia
 Depends=mkinitcpio
 When=PostTransaction
 Exec=/usr/bin/mkinitcpio -P
-{%endace%}
+```
 
 ## Setup a Window Manager or Desktop Environment
 
@@ -93,33 +93,33 @@ Install [KDE Plasma](https://www.archlinux.org/groups/x86_64/plasma/) package as
 
 Choose ```phonon-qt5-gstreamer```, ```libx264```, ```cronie```, ```phonon-qt4-gstreamer```.
 
-{%ace lang='sh'%}
+```shell
 pacman -S plasma kdeadmin-meta kdebase-meta kdegraphics-meta kdenetwork-meta kdeutils-meta
-{%endace%}
+```
 
 I disable baloo since it seems to make my system chug.
 
-{%ace lang='sh'%}
+```shell
 balooctl disable
-{%endace%}
+```
 
 ## Display Manager
 
 I use sddm, simple and works well. For an onscreen keyboard install [qt5-virtualkeyboard](https://www.archlinux.org/packages/extra/x86_64/qt5-virtualkeyboard/).
 
-{%ace lang='sh'%}
+```shell
 pacman -S sddm qt5-virtualkeyboard
-{%endace%}
+```
 
 Setup config at ```/etc/sddm.conf.d/sddm.conf```.
 
-{%ace lang='sh'%}
+```shell
 nano /etc/sddm.conf.d/sddm.conf
-{%endace%}
+```
 
 Tell it to start a desktop file from ```/usr/share/xsessions/```, set dpi, and user.
 
-{%ace lang='sh'%}
+```shell
 # Set DPI based on display
 ServerArguments=-nolisten tcp -dpi 192
 
@@ -131,13 +131,13 @@ User=john
 
 # Current theme name
 Current=breeze
-{%endace%}
+```
 
 Enable sddm.
 
-{%ace lang='sh'%}
+```shell
 systemctl enable sddm
-{%endace%}
+```
 
 Reboot into KDE!
 
@@ -153,11 +153,11 @@ Configure startup run ```vncserver```.
 
 Setup a systemd unit to start vnc, note this connects to physical display, other options are available. Change user.
 
-{%ace lang='sh'%}
+```shell
 nano /etc/systemd/system/x0vncserver.service
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 [Unit]
 Description=Remote desktop service (VNC)
 After=syslog.target network.target
@@ -169,16 +169,16 @@ ExecStart=/usr/bin/sh -c '/usr/bin/x0vncserver -display :0 -rfbport 5900 -passwo
 
 [Install]
 WantedBy=multi-user.target
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 systemctl start x0vncserver
-{%endace%}
+```
 
 ## Fonts
 
 Install [ttf-google-fonts-git (AUR)](https://aur.archlinux.org/packages/ttf-google-fonts-git/).
 
-{%ace lang='sh'%}
+```shell
 aursync --update --temp --chroot ttf-google-fonts-git
-{%endace%}
+```

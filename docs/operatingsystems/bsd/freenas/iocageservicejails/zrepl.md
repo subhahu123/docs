@@ -15,7 +15,7 @@ Create jail:
 
 zfs create -o mountpoint=none tank/zrepl
 
-{%ace lang='sh'%}
+```shell
 iocage create --release 11.3-RELEASE --name zrepl \
           boot=on vnet=on dhcp=off \
           allow_raw_sockets="1" \
@@ -26,7 +26,7 @@ iocage create --release 11.3-RELEASE --name zrepl \
           jail_zfs=on \
           jail_zfs_dataset=repl \
           jail_zfs_mountpoint='none'
-{%endace%}
+```
 
 iocage set vnet=on dhcp=off bpf=yes \
           allow_raw_sockets="1" \
@@ -36,47 +36,47 @@ iocage set vnet=on dhcp=off bpf=yes \
           resolver="search ramsden.network;nameserver 172.20.30.1;nameserver 8.8.8.8" \
           repl
 
-{%ace lang='sh'%}
+```shell
 iocage get jail_zfs_dataset zrepl
-{%endace%}
+```
 
 ### In Jail
 
-{%ace lang='sh'%}
+```shell
 iocage console zrepl
-{%endace%}
+```
 
 Update.
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
-{%endace%}
+```
 
 ### Requirements
 
 Create the log file /var/log/zrepl.log
 
-{%ace lang='sh'%}
+```shell
 touch /var/log/zrepl.log && service newsyslog restart
-{%endace%}
+```
 
 Tell syslogd to redirect facility local0 to the zrepl.log file:
 
-{%ace lang='sh'%}
+```shell
 service syslogd reload
-{%endace%}
+```
 
 Modify the /usr/local/etc/zrepl/zrepl.yml configuration file
 
 Enable the zrepl daemon to start automatically at boot:
 
-{%ace lang='sh'%}
+```shell
 sysrc zrepl_enable="YES"
-{%endace%}
+```
 
 Start the zrepl daemon:
 
-{%ace lang='sh'%}
+```shell
 service zrepl start
-{%endace%}
+```
 

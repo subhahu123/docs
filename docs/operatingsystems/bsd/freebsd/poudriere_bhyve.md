@@ -12,110 +12,110 @@ folder: bsd/freebsd
 
 Setup iohyve:
 
-{%ace lang='sh'%}
+```shell
 iohyve setup pool=tank
 iohyve setup net=igb1
 iohyve setup kmod=1
-{%endace%}
+```
 
 Fetch ISO:
 
-{%ace lang='sh'%}
+```shell
 iohyve fetchiso ftp://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.0/FreeBSD-11.0-RELEASE-amd64-bootonly.iso
 iohyve deleteiso FreeBSD-11.0-RELEASE-amd64-bootonly.iso
-{%endace%}
+```
 
 Create guest with 20GiB HDD.
 
-{%ace lang='sh'%}
+```shell
 iohyve create poudriere 20G
 iohyve set poudriere ram=8G cpu=4
-{%endace%}
+```
 
 Install FreeBSD 11:
 
-{%ace lang='sh'%}
+```shell
 iohyve install poudriere FreeBSD-11.0-RELEASE-amd64-bootonly.iso
-{%endace%}
+```
 
 Attach to console
 
-{%ace lang='sh'%}
+```shell
 iohyve console poudriere
-{%endace%}
+```
 
 Exit and stop the installer when finished
 
-{%ace lang='sh'%}
+```shell
 iohyve stop poudriere
-{%endace%}
+```
 
 Start the machine.
 
-{%ace lang='sh'%}
+```shell
 iohyve start poudriere
-{%endace%}
+```
 
 ## In VM
 
 Update
 
-{%ace lang='sh'%}
+```shell
 pkg update && pkg upgrade
 freebsd-update fetch install
-{%endace%}
+```
 
 ### Poudriere
 
 Install poudriere
 
-{%ace lang='sh'%}
+```shell
 pkg install poudriere
-{%endace%}
+```
 
 Copy the config.
 
-{%ace lang='sh'%}
+```shell
 cp /usr/local/etc/poudriere.conf.sample /usr/local/etc/poudriere.conf
-{%endace%}
+```
 
 ### Certs
 
 Setup SSL to sign ports:
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /usr/local/etc/ssl/{keys,certs}
 chmod 0600 /usr/local/etc/ssl/keys
 openssl genrsa -out /usr/local/etc/ssl/keys/poudriere.key 4096
 openssl rsa -in /usr/local/etc/ssl/keys/poudriere.key -pubout -out /usr/local/etc/ssl/certs/poudriere.cert
-{%endace%}
+```
 
 ## NFS
 
 Start NFS
 
-{%ace lang='sh'%}
+```shell
 sysrc nfs_client_enable=YES && service nfsclient start
-{%endace%}
+```
 
 Mount packages
 
-{%ace lang='sh'%}
+```shell
 mount <ip address>:/mnt/tank/data/poudriere/packages /usr/local/poudriere/data/packages
-{%endace%}
+```
 
 Add to fstab:
 
-{%ace lang='sh'%}
+```shell
 <ip address>:/mnt/tank/data/poudriere/packages /usr/local/poudriere/data/packages nfs  rw      0       0
-{%endace%}
+```
 
 Add locking:
 
-{%ace lang='sh'%}
+```shell
 sysrc rpc_lockd_enable=YES && sysrc rpc_statd_enable=YES
 service lockd start && service statd start
-{%endace%}
+```
 
 
 ## Configuration
@@ -126,7 +126,7 @@ Edit /usr/local/etc/poudriere.conf
 
 These were the settings I had uncommented:
 
-{%ace lang='sh'%}
+```shell
 # Poudriere can optionally use ZFS for its ports/jail storage. For
 # ZFS define ZPOOL, otherwise set NO_ZFS=yes
 #
@@ -217,78 +217,78 @@ COMMIT_PACKAGES_ON_FAILURE=no
 # Some port/packages hardcode the hostname of the host during build time
 # This is a necessary setup for reproducible builds.
 BUILDER_HOSTNAME=<domain>
-{%endace%}
+```
 
 ## Create jail
 
 Create a new '11.1-RELEASE' jail with the name 'freebsd-11-amd64'.
 
-{%ace lang='sh'%}
+```shell
 poudriere jail -c -j freebsd-11-amd64 -v 11.1-RELEASE
-{%endace%}
+```
 
 Setup ports tree:
 
-{%ace lang='sh'%}
+```shell
 poudriere ports -c -p HEAD
-{%endace%}
+```
 
 Create pkg list(s) ```/usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/iocage```
 
-{%ace lang='sh'%}
+```shell
 sysutils/py3-iocage
-{%endace%}
+```
 
 Add to make.conf : /usr/local/etc/poudriere.d/freebsd-11-amd64-make.conf
 
 use py3.6 version of python3:
 
-{%ace lang='sh'%}
+```shell
 DEFAULT_VERSIONS+= php=7.1 python3=3.6
-{%endace%}
+```
 
 For my jails globally: ```/usr/local/etc/poudriere.d/make.conf```
 
 No docs, X11 NLS or egs:
 
-{%ace lang='sh'%}
+```shell
 OPTIONS_UNSET+= DOCS NLS X11 EXAMPLES
-{%endace%}
+```
 
 Set options:
 
-{%ace lang='sh'%}
+```shell
 pkg install dialog4ports
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 poudriere options -j freebsd-11-amd64 -p HEAD -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/iocage -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/nextcloud
-{%endace%}
+```
 
 
 To update jail
 
-{%ace lang='sh'%}
+```shell
 poudriere jail -u -j freebsd-11-amd64
-{%endace%}
+```
 
 Update tree:
 
-{%ace lang='sh'%}
+```shell
 poudriere ports -u -p HEAD
-{%endace%}
+```
 
 Start build(s):
 
-{%ace lang='sh'%}
+```shell
 poudriere bulk -cj freebsd-11-amd64 -p HEAD -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/iocage -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/nextcloud
-{%endace%}
+```
 
 ## Web Server
 
-{%ace lang='sh'%}
+```shell
 pkg install nginx && sysrc nginx_enable=YES
-{%endace%}
+```
 
 Remove all inside server in ```/usr/local/etc/nginx/nginx.conf```, add:
 
@@ -314,22 +314,22 @@ server {
 
 Edit mimetypes /usr/local/etc/nginx/mime.types, add log:
 
-{%ace lang='sh'%}
+```shell
 text/plain                          txt log;
-{%endace%}
+```
 
 Check config and start nginx:
 
-{%ace lang='sh'%}
+```shell
 service nginx configtest
 service nginx start
-{%endace%}
+```
 
 ## Repo Only server
 
 In jail, nullfs mount packages to same spot. Install nginx.
 
-{%ace lang='sh'%}
+```shell
 server {
 
     listen 80 default;
@@ -337,48 +337,48 @@ server {
     root /usr/local/poudriere/data/packages;
     autoindex on;
 }
-{%endace%}
+```
 
 ## Clients
 
 Get cert:
 
-{%ace lang='sh'%}
+```shell
 cat /usr/local/etc/ssl/certs/poudriere.cert
-{%endace%}
+```
 
 Save it on clients:
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /usr/local/etc/ssl/{keys,certs}
 ee /usr/local/etc/ssl/certs/poudriere.cert
-{%endace%}
+```
 
 ## Repo
 
-{%ace lang='sh'%}
+```shell
 mkdir -p /usr/local/etc/pkg/repos
-{%endace%}
+```
 
 Define repo:
 
-{%ace lang='sh'%}
+```shell
 ee /usr/local/etc/pkg/repos/freebsd.conf
-{%endace%}
+```
 
 Inside, use the name FreeBSD in order to match the default repository definition. Disable the repository by defining it like this:
 
-{%ace lang='sh'%}
+```shell
 FreeBSD: {
     enabled: no
 }
-{%endace%}
+```
 
 Repo file at ```/usr/local/etc/pkg/repos/poudriere.conf```
 
 If you want to mix your custom packages with those of the official repositories, your file should look something like this:
 
-{%ace lang='sh'%}
+```shell
 poudriere: {
     url: "http://pkgrepo.ramsden.network/freebsd-11-amd64-HEAD/",
     mirror_type: "http",
@@ -387,12 +387,12 @@ poudriere: {
     enabled: yes,
     priority: 100
 }
-{%endace%}
+```
 
 
 If you want to only use your compiled packages, your file should look something like this:
 
-{%ace lang='sh'%}
+```shell
 poudriere: {
     url: "http://pkgrepo.ramsden.network/freebsd-11-amd64-HEAD/",
     mirror_type: "http",
@@ -400,17 +400,17 @@ poudriere: {
     pubkey: "/usr/local/etc/ssl/certs/poudriere.cert",
     enabled: yes
 }
-{%endace%}
+```
 
 Update:
 
-{%ace lang='sh'%}
+```shell
 pkg update
-{%endace%}
+```
 
 Crontab:
 
-{%ace lang='sh'%}
+```shell
 # Update tree at 3
 0 3 * * * /usr/local/bin/poudriere ports -u -p HEAD >/dev/null 2>&1
 # Jails at 3:30:
@@ -418,29 +418,29 @@ Crontab:
 
 # Build at 4
 0 4 * * * poudriere bulk -cj freebsd-11-amd64 -p HEAD -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/iocage -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/nextcloud -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/emby
-{%endace%}
+```
 
 ## Upgrade jails
 
 To upgrade releases, ie 11.0 to 11.1:
 
-{%ace lang='sh'%}
+```shell
 /usr/local/bin/poudriere jail -u -t 11.1-RELEASE -j freebsd-11-amd64
-{%endace%}
+```
 
 Or delete and re-create
 
-{%ace lang='sh'%}
+```shell
 poudriere jail -d -j freebsd-11-amd64
 poudriere jail -c -j freebsd-11-amd64 -v 11.1-RELEASE
-{%endace%}
+```
 
 Re-create ports tree:
 
-{%ace lang='sh'%}
+```shell
 poudriere ports -d -p HEAD
 poudriere ports -c -p HEAD
-{%endace%}
+```
 
 ## Add new ports
 
@@ -448,20 +448,20 @@ Add additional lists. for example, Emby:
 
 Add ports.
 
-{%ace lang='sh'%}
+```shell
 ee /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/emby
-{%endace%}
+```
 
-{%ace lang='sh'%}
+```shell
 multimedia/ffmpeg
 graphics/ImageMagick
-{%endace%}
+```
 
 ## Poudriere options:
 
-{%ace lang='sh'%}
+```shell
 poudriere options -j freebsd-11-amd64 -p HEAD -f /usr/local/etc/poudriere.d/portlists/freebsd-11-amd64/emby
-{%endace%}
+```
 
 For ffmpeg:
 
