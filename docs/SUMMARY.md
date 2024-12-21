@@ -92,3 +92,8 @@
         *   [rsync](systemadministration/shell/rsync.md)
     *   [ZFS](systemadministration/zfs/introduction.md)
         *   [Mirrors](systemadministration/zfs/mirrors.md)
+
+---
+
+*   [Certifications](certifications/introduction.md)
+    *   [CFA](certifications/CFA/01-Intro.md)
