@@ -33,15 +33,73 @@ Very similar to `docker`
 * kube-apiserver
   * Who you talk to with `kubectl`
   * Only think that talks to `etcd`
+  * either
+    * process with settings in systemd service
+    * or pod with settings in `/etc/kubernetes/manifests/kube-apiserver.yaml` (kubeadm)
 * kube-scheduler
   * Schedules pods on workers, updates etcd
+  * decides which pod goes where based on requirements
 * kubelet
   * Makes changes on worker
+  * does EVERYTHING on node, communicates with api-server
+  * Need to run on worker as service
 * Controller-Manager (brain of k8s)
   * Manages controllers (processes that monitor status of components, nodes etc)
   * Controllers are inside Controller-Manager process
+* kube-proxy
+  * Deals with communications
+  * Internal IPs can change on nodes, we use services instead of pod IPs
+  * kube-proxy runs on each node and creates rules based on services so pod is accessible
 
-kube-apiserver either process with settings in systemd service
-or pod with settings in `/etc/kubernetes/manifests/kube-apiserver.yaml` (kubeadm)
+### Pods
 
+* We can create pods with `yaml`
+* Several keys required in yaml
 
+Required:
+
+```yaml
+apiVersion:
+kind:
+metadata:
+spec:
+```
+
+Typical pod values:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+    containers:
+        - name: nginx-container
+          image: nginx
+```
+
+```shell
+kubectl create -f $FILE.yaml
+kubectl describe myapp-pod
+```
+
+For viewing state:
+
+```shell
+kubectl describe pod webapp
+kubectl get pod webapp -o yaml
+```
+
+Checking where pod is located:
+
+```shell
+kubectl get pods -o wide
+```
+
+Modifying current pods:
+
+```shell
+
+```
