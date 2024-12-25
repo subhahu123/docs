@@ -43,6 +43,8 @@
     - [Network Reliability With iwlwifi](operatingsystems/linux/tuning/network_reliability_iwlwifi.md)
     - [Surface Pro 4 Power Tuning](operatingsystems/linux/tuning/surface_power.md)
     - [ZFS Arc Max on Linux](operatingsystems/linux/tuning/zfs_arc_max.md)
+  - [TrueNAS](operatingsystems/linux/truenas/introduction.md)
+    - [Setup](operatingsystems/linux/truenas/setup.md)
 
 ---
 
@@ -96,5 +98,5 @@
 ---
 
 - [Certifications](certifications/introduction.md)
-  - [CFA](certifications/CFA/01-Intro.md)
-    - [Core-Concepts](certifications/CFA/02-Core-Concepts.md)
+  - [CKA](certifications/CKA/01-Intro.md)
+    - [Core-Concepts](certifications/CKA/02-Core-Concepts.md)
