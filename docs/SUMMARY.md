@@ -100,4 +100,4 @@
 - [Certifications](certifications/introduction.md)
   - [CKA](certifications/CKA/01-Intro.md)
     - [Core-Concepts](certifications/CKA/02-Core-Concepts.md)
-    - [Scheduling](certifications/CKA/03-Scheduling.nd)
+    - [Scheduling](certifications/CKA/03-Scheduling.md)
