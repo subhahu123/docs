@@ -92,6 +92,7 @@
     - [dd](systemadministration/shell/dd.md)
     - [find](systemadministration/shell/find.md)
     - [rsync](systemadministration/shell/rsync.md)
+    - [vim](systemadministration/shell/vim.md)
   - [ZFS](systemadministration/zfs/introduction.md)
     - [Mirrors](systemadministration/zfs/mirrors.md)
 
