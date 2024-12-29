@@ -154,3 +154,74 @@ Other options:
 Available
 * `requiredDuringSchedulingIgnoredDuringExecution`
 * `preferredDuringSchedulingIgnoredDuringExecution`
+
+## Resource Requirements
+
+* Can specify requirements with `resource.requests`
+* Can specify limits with `resource.limits`
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp-color
+  labels:
+    name: simple-webapp-color
+spec:
+ containers:
+ - name: simple-webapp-color
+   image: simple-webapp-color
+   ports:
+    - containerPort:  8080
+   resources:
+     requests:
+      memory: "1Gi"
+      cpu: "1"
+     limits:
+       memory: "2Gi"
+       cpu: "2"
+```
+
+Defaults is no limit, no requirements.
+
+* If no request, but we have limit, request = limit
+* Should atleast set `requests` to avoid starting a pod.
+
+If pod uses too much RAM during usage, we will OOM kill.
+
+We can set defaults for a namespace with `LimitRange`:
+
+We can also set `ResourceQuota` request and limit for a namespace.
+
+You cant adjust limits on pod without deletion, you can on deployment. Deployment will re-create.
+
+## DaemonSets
+
+Run one copy of pod on every node in cluster.
+
+Matadata very similar to `ReplicaSet`:
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitoring-daemon
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-agent
+  template:
+    metadata:
+     labels:
+       app: monitoring-agent
+    spec:
+      containers:
+      - name: monitoring-agent
+        image: monitoring-agent
+```
+
+Under the hood uses affinity.
+
+
