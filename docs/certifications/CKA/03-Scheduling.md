@@ -224,4 +224,80 @@ spec:
 
 Under the hood uses affinity.
 
+## Static Pods
 
+Kubelet can read from `/etc/kubernetes/manifests` instead of talking to `kube-api`
+
+We can only use pods, no complex deployments.
+
+Check `--pod-manifest-path` or (`--kubeconfig` for `staticPodPath:`)
+
+We can view these by listing containers:
+
+* `crictl ps`
+* `nerdctl ps`
+* `docker ps`
+
+Cluster is aware of static pods, but we can't edit them outside manifests.
+
+Kubeadm sets up some services this way.
+
+## Multiple Schedulers
+
+We can add custom schedulers.
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+  - schedulerName: my-scheduler
+```
+
+If using process, name should match systemd service which points at `yaml` config with `--config`
+
+If scheduler in pod, simply deploy as normal pod/deployment:
+
+[Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/)
+
+On pod creation, direct pod to use custom scheduler:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  schedulerName: my-custom-scheduler
+```
+
+```shell
+kubectl get events -o wide
+kubectl logs my-custom-scheduler -n kube-system
+```
+
+## Scheduler Profiles
+
+Scheduling has various stages, each can have associated plugins:
+
+* Scheduling queue
+* Filtering
+* Scoring
+* Binding
+
+To customize plugins for each phase we have extension points
+
+We can set multiple profiles for one scheduler binary:
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+  - schedulerName: my-scheduler
+    plugins:
+      score:
+        disabled: []
+        enabled: []
+```

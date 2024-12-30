@@ -102,3 +102,6 @@
   - [CKA](certifications/CKA/01-Intro.md)
     - [Core-Concepts](certifications/CKA/02-Core-Concepts.md)
     - [Scheduling](certifications/CKA/03-Scheduling.md)
+    - [Logging](certifications/CKA/04-Logging.md)
+    - [Application Lifecycle Management](certifications/CKA/05-Application-Lifecycle-Management.md)
+    - [Cluster Maintenance](certifications/CKA/06-Cluster-Maintenance.md)
