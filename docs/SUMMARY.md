@@ -105,3 +105,6 @@
     - [Logging](certifications/CKA/04-Logging.md)
     - [Application Lifecycle Management](certifications/CKA/05-Application-Lifecycle-Management.md)
     - [Cluster Maintenance](certifications/CKA/06-Cluster-Maintenance.md)
+    - [Security](certifications/CKA/07-Security.md)
+    - [Storage](certifications/CKA/08-Storage.md)
+    - [Storage](certifications/CKA/09-Networking.md)

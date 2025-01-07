@@ -1,7 +1,7 @@
 # Aliases
 
 ```shell
-alias kcy='kubectl get pod -o yaml'
-alias kcd='kubectl run --dry-run=client -o yaml'
 alias k='kubectl'
+export dy='--dry-run=client -o yaml'
+export y='-o yaml'
 ```
