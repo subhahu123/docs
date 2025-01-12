@@ -108,3 +108,5 @@
     - [Security](certifications/CKA/07-Security.md)
     - [Storage](certifications/CKA/08-Storage.md)
     - [Networking](certifications/CKA/09-Networking.md)
+    - [Install Kubernetes with kubeadm](certifications/CKA/11-Installing-with-kubeadm.md)
+    - [JSON PATH](certifications/CKA/12-JSON-PATH.md)

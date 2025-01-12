@@ -181,4 +181,155 @@ By default pods do not get entry, but we can enable DNS enties for them, thry ge
 
 eg '10-244-2-5.default.pod'
 
+## CoreDNS
 
+Config in `/etc/coredns/Corefile`
+
+```
+.:53 {
+    errors
+    health {       lameduck 5s
+    }
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+       pods insecure
+       fallthrough in-addr.arpa ip6.arpa
+       ttl 30
+    }
+    prometheus :9153
+    forward . /etc/resolv.conf
+    cache 30
+    loop
+    reload
+}
+```
+
+```shell
+kubectl get configmap -n kube-system
+```
+
+Kubelet configures DNS server for pods by setting `nameserver` in `/etc/resolv.conf`
+
+`resolv.conf` also contains a search query to allow PARTIAL FQDN:
+
+```
+search default.svc.cluster.local svc.cluster.local cluster.local
+```
+
+## Ingress Controllers
+
+Native internal loadbalancing.
+
+Not deployed by default.
+
+GCE, nginx maintained by k8s (currently)
+
+Create an ingress service account, and service.
+
+Create a deployment with:
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-configuration
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: nginx-ingress
+    spec:
+      serviceAccountName: ingress-serviceaccount
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+```
+
+To configure ingress, create an ingress-resource:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+     backend:
+        serviceName: wear-service
+        servicePort: 80
+```
+
+```shell
+kubectl get ingress
+```
+
+To define rules for paths:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /wear
+        backend:
+          serviceName: wear-service
+          servicePort: 80
+      - path: /watch
+        backend:
+          serviceName: watch-service
+          servicePort: 80
+```
+
+For domain name rules:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+spec:
+  rules:
+  - host: wear.my-online-store.com
+    http:
+      paths:
+      - backend:
+          serviceName: wear-service
+          servicePort: 80
+  - host: watch.my-online-store.com
+    http:
+      paths:
+      - backend:
+          serviceName: watch-service
+          servicePort: 80
+```
