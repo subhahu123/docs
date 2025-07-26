@@ -110,3 +110,12 @@
     - [Networking](certifications/CKA/09-Networking.md)
     - [Install Kubernetes with kubeadm](certifications/CKA/11-Installing-with-kubeadm.md)
     - [JSON PATH](certifications/CKA/12-JSON-PATH.md)
+
+---
+
+- [Software Design](softwaredesign/introduction.md)
+  - [DSA](softwaredesign/DSA/NOTES.md)
+  - [LLD](softwaredesign/LLD/introduction.md)
+    - [Composition and Polymorphism](softwaredesign/LLD/COMPOSITION-and-POLYMORPHISM.md)
+    - [SDLC](softwaredesign/LLD/SDLC.md)
+    - [SOLID](softwaredesign/LLD/SOLID.md)
