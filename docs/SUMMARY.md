@@ -5,6 +5,7 @@
 ---
 
 - [Linux](operatingsystems/linux/introduction.md)
+  - [Ubiquity](operatingsystems/linux/ubiquity/cloudkey.md)
   - [Distributions](operatingsystems/linux/distributions/introduction.md)
     - [Arch Linux](operatingsystems/linux/distributions/archlinux/introduction.md)
       - [Common Applications](operatingsystems/linux/distributions/archlinux/applications.md)
