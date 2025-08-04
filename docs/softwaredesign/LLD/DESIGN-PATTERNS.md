@@ -57,7 +57,7 @@ Logger@8efb846
 Logger@8efb846
 ```
 
-## Builder Pattern
+### Builder Pattern
 
 With complex objects, instead of complex constructor, "build" the object step-by-step:
 
@@ -112,7 +112,7 @@ car = Car(engine="V8", wheels=6)
 
 There is a more complex pattern with the director and more boilerplate wedding practice it is not frequently used outside of textbook examples.
 
-## Factory Pattern
+### Factory Pattern
 
 Used for hiding the complexities of object creation. Use a simpler interface and the complex part is behind the scenes.
 
