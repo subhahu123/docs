@@ -116,7 +116,11 @@
 
 - [Software Design](softwaredesign/introduction.md)
   - [DSA](softwaredesign/DSA/NOTES.md)
+    - [Trees](softwaredesign/DSA/binary_search.md)
+    - [Graphs](softwaredesign/DSA/graphs.md)
+    - [Binary Search](softwaredesign/DSA/trees.md)
   - [LLD](softwaredesign/LLD/introduction.md)
     - [Composition and Polymorphism](softwaredesign/LLD/COMPOSITION-and-POLYMORPHISM.md)
     - [SDLC](softwaredesign/LLD/SDLC.md)
     - [SOLID](softwaredesign/LLD/SOLID.md)
+    - [Design Patterns](softwaredesign/LLD/DESIGN-PATTERNS.md)
