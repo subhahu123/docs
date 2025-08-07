@@ -110,7 +110,7 @@ class Car:
 car = Car(engine="V8", wheels=6)
 ```
 
-There is a more complex pattern with the director and more boilerplate wedding practice it is not frequently used outside of textbook examples.
+There is a more complex pattern with the director and more boilerplate , but in practice it is not frequently used outside of textbook examples.
 
 ### Factory Pattern
 
