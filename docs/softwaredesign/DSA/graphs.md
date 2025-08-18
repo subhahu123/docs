@@ -2,7 +2,7 @@
 
 ## Shortest Path for Weighted Graph
 
-## Dijkstra’s
+### Dijkstra’s
 
 `O((V + E) log V)` with a binary heap.
 
@@ -81,7 +81,7 @@ graph = {
 print(dijkstra(graph, 'A'))
 ```
 
-## Bellman-Ford Algorithm
+### Bellman-Ford Algorithm
 
 Use if we have negative path weights.
 
@@ -191,3 +191,157 @@ Note:
 We can limit the maximum number of edges traversed to see the shortest path with an additional restriction of how many edges we can traverse. For example if we wanted two Traverse a maximum of K edges we would use that instead of N-1
 
 If we do this we must use a temp variable
+
+## Topological Sort
+
+[Video (Kahn's)](https://www.youtube.com/watch?v=cIBFEhD77b4)
+
+[Leetcode Explore Card Kahn's Algorithm](https://leetcode.com/explore/learn/card/graph/623/kahns-algorithm-for-topological-sorting/3886/)
+
+Lets us model dependencies with a graph.
+
+`O(V+E)`
+
+Gives us an order we can traverse to path through graph from most dependant to least.
+
+![](img/graphs/topological_ordering.png)
+
+There can be multiple orderings.
+
+### Kahn's Algorithm
+
+In-degree for node represents how many must come before
+
+If a node’s in-degree is 0, it means no prerequisites
+
+Repeatedly remove nodes without dependencies from the graph and add them to the topological ordering.
+
+As we remove them from the graph, we removed their outgoing edges, and new nodes without dependencies become free.
+
+We repeat the process until we have looked at every node or we have found a cycle
+
+Use a queue to maintain zero dependencies nodes.
+
+[Example](https://leetcode.com/problems/course-schedule/description/)
+
+```python
+from collections import defaultdict, deque
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        if not prerequisites:
+            return True
+
+        adj = defaultdict(list)
+        in_deg = defaultdict(int)
+        # Create adjacency list and in degree map
+        for parent, child in prerequisites:
+            adj[child].append(parent)
+            in_deg[parent] += 1
+            if parent not in in_deg:
+                in_deg[parent] = 0
+
+        # Account for ALL courses, even if not in prereq
+
+        for v in range(0, numCourses):
+            if v not in in_deg:
+                in_deg[v] = 0
+
+        # Create queue for zero degree items
+        q = deque()
+        for k, v in in_deg.items():
+            if v == 0:
+                q.append(k)
+
+        # ordering
+        order = []
+
+        # iterate over queue while it has items
+        while q:
+            node = q.popleft()
+            order.append(node)
+
+            for nei in adj[node]:
+                in_deg[nei] -= 1
+                if in_deg[nei] == 0:
+                    q.append(nei)
+
+
+        # cycle detected
+        if len(order) != numCourses:
+            return False
+
+        return True
+```
+
+Or, a more conventional example:
+
+```python
+from collections import deque, defaultdict
+from typing import Dict, Iterable, List, Tuple, Hashable
+
+def kahn_toposort(edges: Iterable[Tuple[Hashable, Hashable]]) -> List[Hashable]:
+    """
+    Perform topological sort using Kahn's algorithm.
+    edges: iterable of (u, v) meaning a directed edge u -> v
+
+    Returns a list of nodes in topological order.
+    Raises ValueError if a cycle is detected.
+    """
+    # Build adjacency list and indegree counts
+    adj: Dict[Hashable, List[Hashable]] = defaultdict(list)
+    indeg: Dict[Hashable, int] = defaultdict(int)
+    nodes = set()
+
+    for u, v in edges:
+        adj[u].append(v)
+        indeg[v] += 1
+        nodes.add(u); nodes.add(v)
+
+    # Include isolated nodes (if you have an external node list, merge it into 'nodes')
+    for u in list(nodes):
+        indeg.setdefault(u, 0)
+
+    # Queue of all nodes with no incoming edges
+    q = deque([n for n in nodes if indeg[n] == 0])
+
+    order: List[Hashable] = []
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in adj[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+
+    if len(order) != len(nodes):
+        # Some nodes were never removed ⇒ cycle exists
+        raise ValueError("Graph has at least one cycle; topological order does not exist.")
+
+    return order
+
+# --- Example usage ---
+
+# DAG example:
+# A → C → D
+#  ↘︎ B → ↗︎
+edges = [
+    ("A", "C"),
+    ("A", "B"),
+    ("B", "D"),
+    ("C", "D"),
+]
+
+order = kahn_toposort(edges)
+print("Topological order (DAG):", order)
+# Possible output (one of many valid orders):
+# Topological order (DAG): ['A', 'B', 'C', 'D']  or  ['A', 'C', 'B', 'D']
+
+# Cycle example: 1 → 2 → 3 → 1
+cyclic_edges = [(1, 2), (2, 3), (3, 1)]
+try:
+    kahn_toposort(cyclic_edges)
+except ValueError as e:
+    print("Cycle example:", e)
+# Output:
+# Cycle example: Graph has at least one cycle; topological order does not exist.
+```
