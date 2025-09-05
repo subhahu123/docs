@@ -82,3 +82,44 @@ To traverse levels, use:
 
         return lrg
 ```
+
+## Trie
+
+A trie (pronounced “try”) is a tree-based data structure that stores strings efficiently by sharing common prefixes. Also called a prefix tree, a trie enables fast string search, insertion, and deletion operations in O(L) time, where L is the string length.
+
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                # For each char, go down tree inserting if not present
+                current.children[char] = TrieNode()
+
+            # Add each char as a child of current
+            current = current.children[char]
+        current.is_end_of_word = True
+
+    def search(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                return False
+            current = current.children[char]
+        return current.is_end_of_word
+
+# Example usage
+trie = Trie()
+trie.insert("GLOBAL")
+
+print(trie.search("GLOBE"))   # False
+print(trie.search("GLOBES"))  # False
+```

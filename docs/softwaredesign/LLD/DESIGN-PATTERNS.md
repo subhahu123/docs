@@ -1,6 +1,10 @@
 # Design Patterns
 
+* https://github.com/ashishps1/awesome-low-level-design
+
 ## Creational
+
+How to create objects.
 
 ### Singleton
 
@@ -165,3 +169,49 @@ car = CarFactory.createCar(cartype, enginetype)
 ```
 
 This gives us a cleaner "interface"
+
+
+
+## Structural
+
+How objects relate to eachother.
+
+### Facade
+
+"Fancy way to encapsulate"
+
+Hides all the nasty behaviour.
+
+Maybe you have a bunch of complex subsystems that are required for a payment processor. Fraud detection, inventory, shipping calculator etc. Rather than exposing all this logic and having a bunch of if statements, just provide your single facade that is for making an order with the payment processor. It hides all the details required in the background.
+
+[Facade](https://algomaster.io/learn/lld/facade)
+
+### Adapter
+
+Provide a standard interface, and then wrap other implementations such as legacy implementations by implementing the interface and holding a dependency to a concrete type that is the other implementation.
+
+EG, Weather app expects celsius, third party API is in F.
+
+We implement a standard interface and hide the 'adapting'
+
+[Adapter](https://algomaster.io/learn/lld/adapter)
+
+## Behavioral
+
+Behavioral patterns are all about efficient communication and the delegation of responsibilities among objects. They help in defining not just how objects are composed, but also how they communicate within the application's architecture.
+
+### Strategy
+
+And there's multiple ways to do something, you can dynamically change strategies. Define an interface for a strategy, and then implement it for each strategy. This is in contrast with just a bunch of different if statements inside a single class based on the strategy in use without the pattern.
+
+You can dynamically change the strategy just by setting the strategy.
+
+[Strategy](https://algomaster.io/learn/lld/strategy)
+
+### Observer
+
+"Observe" events happening to other objects.
+
+In this way you can subscribe to events that are happening to another object, and be notified when the event occurs.
+
+[Observer](https://algomaster.io/learn/lld/observer)
