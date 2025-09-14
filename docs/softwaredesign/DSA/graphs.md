@@ -216,7 +216,6 @@ def bellman_ford(n, edges, source):
     return dist
 ```
 
-
 ## Topological Sort
 
 [Video (Kahn's)](https://www.youtube.com/watch?v=cIBFEhD77b4)
