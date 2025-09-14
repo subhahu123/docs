@@ -188,9 +188,34 @@ print(f"D: {distances[3]}")
 
 Note:
 
-We can limit the maximum number of edges traversed to see the shortest path with an additional restriction of how many edges we can traverse. For example if we wanted two Traverse a maximum of K edges we would use that instead of N-1
+We can limit the maximum number of edges traversed to see the shortest path with an additional restriction of how many edges we can traverse. For example if we wanted to traverse a maximum of K edges we would use that instead of N-1
 
-If we do this we must use a temp variable
+If we do this we must use a temp variable! This is because otherwise we update additional times in the cycle:
+
+```python
+def bellman_ford(n, edges, source):
+    INF = float('inf')
+    dist = [INF] * n
+    dist[source] = 0
+
+    # Relax all edges (V - 1) times
+    for _ in range(n - 1):
+        curr = dist[:]
+        for u, v, w in edges:
+            # dist holds the best distances found using ≤ i edges.
+            # curr should hold the best distances using ≤ i+1 edges.
+            if dist[u] != INF and dist[u] + w < curr[v]:  # Keep start location same (old), use new curr
+                curr[v] = dist[u] + w
+        dist = curr
+
+    # Optional: Detect negative-weight cycle
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            raise ValueError("Graph contains a negative-weight cycle")
+
+    return dist
+```
+
 
 ## Topological Sort
 
