@@ -115,6 +115,8 @@
 ---
 
 - [Software Design](softwaredesign/introduction.md)
+  - [SQL](softwaredesign/SQL/introduction.md)
+    - [Query Optimization](softwaredesign/SQL/query-optimization.md)
   - [DSA](softwaredesign/DSA/NOTES.md)
     - [Trees](softwaredesign/DSA/trees.md)
     - [Graphs](softwaredesign/DSA/graphs.md)
