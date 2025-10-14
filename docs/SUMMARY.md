@@ -122,6 +122,8 @@
     - [Graphs](softwaredesign/DSA/graphs.md)
     - [Binary Search](softwaredesign/DSA/binary_search.md)
     - [Linked Lists](softwaredesign/DSA/linked_lists.md)
+    - [DP](softwaredesign/DSA/DP.md)
+    - [Sorting](softwaredesign/DSA/sorting.md)
   - [HLD](softwaredesign/HLD/introduction.md)
   - [LLD](softwaredesign/LLD/introduction.md)
     - [Composition and Polymorphism](softwaredesign/LLD/COMPOSITION-and-POLYMORPHISM.md)
